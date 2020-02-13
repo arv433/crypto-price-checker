@@ -1,15 +1,29 @@
-const cryptocompareUrl = 'https://min-api.cryptocompare.com/data/price?'
+const queryParam = obj =>
+  Object.keys(obj).reduce(
+    (acc, value, index) =>
+      acc +
+      value +
+      '=' +
+      obj[value] +
+      (index === Object.keys(obj).length - 1 ? '' : '&'),
+    '?'
+  )
+
+const cryptocompareUrl = 'https://min-api.cryptocompare.com/data/price'
 
 $('#submitButton').click(function () {
-  const cryptoCode = $('#cryptoInput').val()
-  const currencyCode = $('#currencyInput').val()
-
-  const parameterizedUrl = `${cryptocompareUrl}fsym=${cryptoCode}&tsyms=${currencyCode}`
-
+  const parameterizedUrl =
+    cryptocompareUrl +
+    queryParam({
+      fsym: $('#cryptoInput').val(),
+      tsyms: $('#currencyInput').val()
+    })
+  console.log('requesting data from ', parameterizedUrl)
   $.ajax({
     url: parameterizedUrl,
     success: function (result, textStatus, xhr) {
-      $('#resultView').text(`$${result[currencyCode]}`)
+      console.log(result)
+      $('#resultView').text(`$${result[$('#currencyInput').val()]}`)
     }
   })
 })
